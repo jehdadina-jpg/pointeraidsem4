@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pointer Aid 2.0 – Sem IV | FTC SwDC KJSSE</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #1a1a2e;
+      --card: #22223a;
+      --card2: #2a2a42;
+      --border: #35355a;
+      --accent: #a855f7;
+      --accent2: #7c3aed;
+      --accent-glow: rgba(168, 85, 247, 0.35);
+      --text: #e8e8f0;
+      --muted: #888899;
+      --input-bg: #1a1a2e;
+      --input-border: #444466;
+      --green: #34d399;
+      --yellow: #fbbf24;
+      --red: #f87171;
+      --track: #3a3a5a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(124, 58, 237, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(168, 85, 247, 0.10) 0%, transparent 60%);
+    }
+
+    header {
+      padding: 28px 32px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header-left h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      background: linear-gradient(90deg, #c084fc, #a855f7, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-left .subtitle {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      margin-top: 5px;
+      letter-spacing: 0.3px;
+    }
+
+    .credits {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: right;
+      line-height: 1.7;
+      align-self: center;
+    }
+
+    .credits strong {
+      color: #c084fc;
+      font-weight: 500;
+    }
+
+    main {
+      padding: 28px 32px 160px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      margin-top: 30px;
+      padding-left: 2px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--border), transparent);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 20px 18px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent2), var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover {
+      border-color: var(--accent2);
+      box-shadow: 0 4px 30px rgba(124, 58, 237, 0.15);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.0rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      line-height: 1.3;
+    }
+
+    .card-credits {
+      font-size: 0.68rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      margin-bottom: 16px;
+      letter-spacing: 0.3px;
+    }
+
+    .inputs-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .input-group {
+      flex: 1;
+      min-width: 80px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.65rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      margin-bottom: 5px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      gap: 5px;
+      transition: border-color 0.2s;
+    }
+
+    .input-wrap:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.15);
+    }
+
+    .input-wrap input {
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.88rem;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .input-wrap input::-webkit-inner-spin-button,
+    .input-wrap input::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+
+    .input-wrap .max-val {
+      font-size: 0.72rem;
+      color: var(--muted);
+      white-space: nowrap;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .input-wrap .lock-icon {
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+      opacity: 0.45;
+      flex-shrink: 0;
+    }
+
+    .input-wrap .lock-icon:hover {
+      opacity: 1;
+    }
+
+    .input-wrap.is-locked {
+      border-color: var(--accent);
+      background: rgba(168, 85, 247, 0.08);
+    }
+
+    .input-wrap.is-locked input {
+      color: var(--accent);
+    }
+
+    .input-wrap.is-locked .lock-icon {
+      opacity: 1;
+    }
+
+    .gp-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .gp-label {
+      font-size: 0.72rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+    }
+
+    .gp-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 28px;
+      text-align: right;
+    }
+
+    .slider-track {
+      position: relative;
+      height: 5px;
+      background: var(--track);
+      border-radius: 10px;
+      margin-bottom: 14px;
+    }
+
+    .slider-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+
+    .slider-thumb {
+      position: absolute;
+      top: 50%;
+      width: 14px;
+      height: 14px;
+      background: var(--accent);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 8px var(--accent-glow);
+      transition: left 0.3s ease;
+    }
+
+    .minimize-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .minimize-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(168, 85, 247, 0.08);
+    }
+
+    /* OEG special */
+    .oeg-slider-input {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      background: var(--track);
+      border-radius: 10px;
+      outline: none;
+      margin: 4px 0 14px;
+      cursor: pointer;
+    }
+
+    .oeg-slider-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+      cursor: pointer;
+    }
+
+    .sgpi-grade {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+
+    /* Inline minimize panel */
+    .minimize-panel {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.35s ease, opacity 0.25s ease;
+      margin-top: 0;
+    }
+
+    .minimize-panel.open {
+      max-height: 320px;
+      opacity: 1;
+      margin-top: 12px;
+    }
+
+    .minimize-panel-inner {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 14px 12px;
+    }
+
+    .mp-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .mp-label {
+      font-size: 0.63rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .mp-gp-val {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .mp-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      background: var(--track);
+      border-radius: 10px;
+      outline: none;
+      margin: 4px 0 12px;
+      cursor: pointer;
+    }
+
+    .mp-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+      cursor: pointer;
+    }
+
+    .mp-result {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      line-height: 1.85;
+    }
+
+    .mp-result .res-line {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .mp-result .res-line span:last-child {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* Modal – kept only for TARGET SGPI global button */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 20, 0.85);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(6px);
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px 28px;
+      max-width: 420px;
+      width: 92%;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .modal p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .modal .target-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .modal .target-input-wrap input {
+      flex: 1;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 1rem;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .modal .target-input-wrap input:focus {
+      border-color: var(--accent);
+    }
+
+    .modal .calc-btn {
+      background: var(--accent2);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .modal .calc-btn:hover {
+      background: var(--accent);
+    }
+
+    .modal-result {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      line-height: 1.8;
+      max-height: 240px;
+      overflow-y: auto;
+      background: var(--input-bg);
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: none;
+    }
+
+    .modal-result.show {
+      display: block;
+    }
+
+    .modal-result .res-line {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .modal-result .res-line span:last-child {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.3rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+    }
+
+    /* Sticky bottom bar */
+    .sticky-bottom {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: rgba(26, 26, 46, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      padding: 14px 32px;
+    }
+
+    .summary-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .summary-item {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      padding: 0 16px;
+    }
+
+    .summary-item+.summary-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 15%;
+      bottom: 15%;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .summary-item .s-label {
+      font-size: 0.62rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .summary-item .s-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #c084fc, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+    }
+
+    .summary-item .s-sub {
+      font-size: 0.65rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .minimize-global-wrap {
+      flex: 0 0 auto;
+      padding-left: 20px;
+    }
+
+    font-size: 0.65rem;
+    font-family: 'DM Mono',
+    monospace;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(168, 85, 247, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    margin-left: 6px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 18px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      font-family: 'DM Mono', monospace;
+    }
+
+    footer span {
+      color: var(--accent);
+    }
+
+    @media(max-width:600px) {
+      header {
+        padding: 24px 18px 16px;
+      }
+
+      main {
+        padding: 18px 14px 50px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-bar {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .summary-item+.summary-item::before {
+        display: none;
+      }
+
+      .header-left h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="header-left">
+      <h1>Pointer Aid 2.0 <span style="font-size:0.6em;opacity:0.7">(Updated)</span></h1>
+      <div class="subtitle">SEM IV &nbsp;·&nbsp; Finance &amp; Tech Club FTC SwDC KJSSE</div>
+    </div>
+    <div class="credits">
+      Idea &amp; Credits<br>
+      <strong>Hussain Pettiwala</strong> &amp; <strong>Arya Nair</strong>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- THEORY SUBJECTS -->
+    <div class="section-label">Theory Subjects</div>
+    <div class="grid" id="theory-grid">
+
+      <!-- PSOT Theory -->
+      <div class="card" data-subject="psot-theory">
+        <div class="card-title">PSOT – Theory</div>
+        <div class="card-credits">Probability, Statistics &amp; Optimization Techniques &nbsp;·&nbsp; <strong
+            style="color:#c084fc">3 Credits</strong></div>
+        <div class="inputs-row">
+          <div class="input-group">
+            <label>ISE</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="ise" min="0" max="30" placeholder="0">
+              <span class="max-val">/ 30</span>
+              <span class="lock-icon" title="Lock this field">🔓</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>IA</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="ia" min="0" max="20" placeholder="0">
+              <span class="max-val">/ 20</span>
+              <span class="lock-icon" title="Lock this field">🔓</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>ESE</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="ese" min="0" max="50" placeholder="0">
+              <span class="max-val">/ 50</span>
+              <span class="lock-icon" title="Lock this field">🔓</span>
+            </div>
+          </div>
+        </div>
+        <div class="gp-row">
+          <span class="gp-label">Grade Pointer (G): <span class="grade-badge gp-grade">O</span></span>
+          <span class="gp-value gp-display">10</span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:100%"></div>
+          <div class="slider-thumb" style="left:100%"></div>
+        </div>
+        <button class="minimize-btn" onclick="toggleMinimizePanel('psot-theory', this)">MINIMIZE MARKS ▾</button>
+        <div class="minimize-panel" id="mp-psot-theory">
+          <div class="minimize-panel-inner">
+            <div class="mp-label-row"><span class="mp-label">Target Grade Pointer</span><span class="mp-gp-val"
+                id="mpv-psot-theory">10</span></div>
+            <input type="range" class="mp-slider" min="0" max="10" step="1" value="10"
+              oninput="onMpSlider('psot-theory',this)">
+            <div class="mp-result" id="mpr-psot-theory"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PSOT Tutorial -->
+      <div class="card" data-subject="psot-tutorial">
+        <div class="card-title">PSOT – Tutorial</div>
+        <div class="card-credits">Probability, Statistics &amp; Optimization Techniques &nbsp;·&nbsp; <strong
+            style="color:#c084fc">1 Credit</strong></div>
+        <div class="inputs-row">
+          <div class="input-group">
+            <label>TW</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="tw" min="0" max="25" placeholder="0">
+              <span class="max-val">/ 25</span>
+              <span class="lock-icon" title="Lock this field">🔓</span>
+            </div>
+          </div>
+        </div>
+        <div class="gp-row">
+          <span class="gp-label">Grade Pointer (G): <span class="grade-badge gp-grade">O</span></span>
+          <span class="gp-value gp-display">10</span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:100%"></div>
+          <div class="slider-thumb" style="left:100%"></div>
+        </div>
+        <button class="minimize-btn" onclick="toggleMinimizePanel('psot-tutorial', this)">MINIMIZE MARKS ▾</button>
+        <div class="minimize-panel" id="mp-psot-tutorial">
+          <div class="minimize-panel-inner">
+            <div class="mp-label-row"><span class="mp-label">Target Grade Pointer</span><span class="mp-gp-val"
+                id="mpv-psot-tutorial">10</span></div>
+            <input type="range" class="mp-slider" min="0" max="10" step="1" value="10"
+              oninput="onMpSlider('psot-tutorial',this)">
+            <div class="mp-result" id="mpr-psot-tutorial"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AOA -->
+      <div class="card" data-subject="aoa">
+        <div class="card-title">AOA – Analysis of Algorithms</div>
+        <div class="card-credits">Theory &nbsp;·&nbsp; <strong style="color:#c084fc">3 Credits</strong></div>
+        <div class="inputs-row">
+          <div class="input-group">
+            <label>ISE</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="ise" min="0" max="30" placeholder="0">
+              <span class="max-val">/ 30</span>
+              <span class="lock-icon" title="Lock this field">🔓</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>IA</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="ia" min="0" max="20" placeholder="0">
+              <span class="max-val">/ 20</span>
+              <span class="lock-icon" title="Lock this field">🔓</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>ESE</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="ese" min="0" max="50" placeholder="0">
+              <span class="max-val">/ 50</span>
+              <span class="lock-icon" title="Lock this field">🔓</span>
+            </div>
+          </div>
+        </div>
+        <div class="gp-row">
+          <span class="gp-label">Grade Pointer (G): <span class="grade-badge gp-grade">O</span></span>
+          <span class="gp-value gp-display">10</span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:100%"></div>
+          <div class="slider-thumb" style="left:100%"></div>
+        </div>
+        <button class="minimize-btn" onclick="toggleMinimizePanel('aoa', this)">MINIMIZE MARKS ▾</button>
+        <div class="minimize-panel" id="mp-aoa">
+          <div class="minimize-panel-inner">
+            <div class="mp-label-row"><span class="mp-label">Target Grade Pointer</span><span class="mp-gp-val"
+                id="mpv-aoa">10</span></div>
+            <input type="range" class="mp-slider" min="0" max="10" step="1" value="10" oninput="onMpSlider('aoa',this)">
+            <div class="mp-result" id="mpr-aoa"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RDBMS -->
+      <div class="card" data-subject="rdbms">
+        <div class="card-title">RDBMS</div>
+        <div class="card-credits">Relational Database Management Systems &nbsp;·&nbsp; <strong style="color:#c084fc">3
+            Credits</strong></div>
+        <div class="inputs-row">
+          <div class="input-group">
+            <label>ISE</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="ise" min="0" max="30" placeholder="0">
+              <span class="max-val">/ 30</span>
+              <span class="lock-icon" title="Lock this field">🔓</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>IA</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="ia" min="0" max="20" placeholder="0">
+              <span class="max-val">/ 20</span>
+              <span class="lock-icon" title="Lock this field">🔓</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>ESE</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="ese" min="0" max="50" placeholder="0">
+              <span class="max-val">/ 50</span>
+              <span class="lock-icon" title="Lock this field">🔓</span>
+            </div>
+          </div>
+        </div>
+        <div class="gp-row">
+          <span class="gp-label">Grade Pointer (G): <span class="grade-badge gp-grade">O</span></span>
+          <span class="gp-value gp-display">10</span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:100%"></div>
+          <div class="slider-thumb" style="left:100%"></div>
+        </div>
+        <button class="minimize-btn" onclick="toggleMinimizePanel('rdbms', this)">MINIMIZE MARKS ▾</button>
+        <div class="minimize-panel" id="mp-rdbms">
+          <div class="minimize-panel-inner">
+            <div class="mp-label-row"><span class="mp-label">Target Grade Pointer</span><span class="mp-gp-val"
+                id="mpv-rdbms">10</span></div>
+            <input type="range" class="mp-slider" min="0" max="10" step="1" value="10"
+              oninput="onMpSlider('rdbms',this)">
+            <div class="mp-result" id="mpr-rdbms"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OS -->
+      <div class="card" data-subject="os">
+        <div class="card-title">Operating Systems</div>
+        <div class="card-credits">Theory &nbsp;·&nbsp; <strong style="color:#c084fc">3 Credits</strong></div>
+        <div class="inputs-row">
+          <div class="input-group">
+            <label>ISE</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="ise" min="0" max="30" placeholder="0">
+              <span class="max-val">/ 30</span>
+              <span class="lock-icon" title="Lock this field">🔓</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>IA</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="ia" min="0" max="20" placeholder="0">
+              <span class="max-val">/ 20</span>
+              <span class="lock-icon" title="Lock this field">🔓</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>ESE</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="ese" min="0" max="50" placeholder="0">
+              <span class="max-val">/ 50</span>
+              <span class="lock-icon" title="Lock this field">🔓</span>
+            </div>
+          </div>
+        </div>
+        <div class="gp-row">
+          <span class="gp-label">Grade Pointer (G): <span class="grade-badge gp-grade">O</span></span>
+          <span class="gp-value gp-display">10</span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:100%"></div>
+          <div class="slider-thumb" style="left:100%"></div>
+        </div>
+        <button class="minimize-btn" onclick="toggleMinimizePanel('os', this)">MINIMIZE MARKS ▾</button>
+        <div class="minimize-panel" id="mp-os">
+          <div class="minimize-panel-inner">
+            <div class="mp-label-row"><span class="mp-label">Target Grade Pointer</span><span class="mp-gp-val"
+                id="mpv-os">10</span></div>
+            <input type="range" class="mp-slider" min="0" max="10" step="1" value="10" oninput="onMpSlider('os',this)">
+            <div class="mp-result" id="mpr-os"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OEG -->
+      <div class="card" data-subject="oeg">
+        <div class="card-title">OEG – Open Elective Generic</div>
+        <div class="card-credits">Direct Grade Pointer Input &nbsp;·&nbsp; <strong style="color:#c084fc">3
+            Credits</strong></div>
+        <div class="inputs-row">
+          <div class="input-group" style="flex:none;width:100%">
+            <label>Grade Pointer (0–10)</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input oeg-direct" data-field="gp" min="0" max="10" step="1"
+                placeholder="0–10" style="font-size:1rem">
+            </div>
+          </div>
+        </div>
+        <div class="gp-row" style="margin-top:4px">
+          <span class="gp-label">Grade Pointer (G): <span class="grade-badge gp-grade">O</span></span>
+          <span class="gp-value gp-display">10</span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:100%"></div>
+          <div class="slider-thumb" style="left:100%"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- LAB SUBJECTS -->
+    <div class="section-label">Laboratory Subjects</div>
+    <div class="grid" id="lab-grid">
+
+      <!-- CPL Lab -->
+      <div class="card" data-subject="cpl-lab">
+        <div class="card-title">CPL – Competitive Programming Lab</div>
+        <div class="card-credits">Laboratory &nbsp;·&nbsp; <strong style="color:#c084fc">2 Credits</strong></div>
+        <div class="inputs-row">
+          <div class="input-group">
+            <label>TW</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="tw" min="0" max="50" placeholder="0">
+              <span class="max-val">/ 50</span>
+              <span class="lock-icon">🔒</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Practical / Viva</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="pv" min="0" max="50" placeholder="0">
+              <span class="max-val">/ 50</span>
+              <span class="lock-icon">🔒</span>
+            </div>
+          </div>
+        </div>
+        <div class="gp-row">
+          <span class="gp-label">Grade Pointer (G): <span class="grade-badge gp-grade">O</span></span>
+          <span class="gp-value gp-display">10</span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:100%"></div>
+          <div class="slider-thumb" style="left:100%"></div>
+        </div>
+        <button class="minimize-btn" onclick="toggleMinimizePanel('cpl-lab', this)">MINIMIZE MARKS ▾</button>
+        <div class="minimize-panel" id="mp-cpl-lab">
+          <div class="minimize-panel-inner">
+            <div class="mp-label-row"><span class="mp-label">Target Grade Pointer</span><span class="mp-gp-val"
+                id="mpv-cpl-lab">10</span></div>
+            <input type="range" class="mp-slider" min="0" max="10" step="1" value="10"
+              oninput="onMpSlider('cpl-lab',this)">
+            <div class="mp-result" id="mpr-cpl-lab"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WPL -->
+      <div class="card" data-subject="wpl">
+        <div class="card-title">WPL – Web Programming Lab</div>
+        <div class="card-credits">Laboratory &nbsp;·&nbsp; <strong style="color:#c084fc">3 Credits</strong></div>
+        <div class="inputs-row">
+          <div class="input-group">
+            <label>TW</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="tw" min="0" max="50" placeholder="0">
+              <span class="max-val">/ 50</span>
+              <span class="lock-icon">🔒</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Practical / Viva</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="pv" min="0" max="50" placeholder="0">
+              <span class="max-val">/ 50</span>
+              <span class="lock-icon">🔒</span>
+            </div>
+          </div>
+        </div>
+        <div class="gp-row">
+          <span class="gp-label">Grade Pointer (G): <span class="grade-badge gp-grade">O</span></span>
+          <span class="gp-value gp-display">10</span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:100%"></div>
+          <div class="slider-thumb" style="left:100%"></div>
+        </div>
+        <button class="minimize-btn" onclick="toggleMinimizePanel('wpl', this)">MINIMIZE MARKS ▾</button>
+        <div class="minimize-panel" id="mp-wpl">
+          <div class="minimize-panel-inner">
+            <div class="mp-label-row"><span class="mp-label">Target Grade Pointer</span><span class="mp-gp-val"
+                id="mpv-wpl">10</span></div>
+            <input type="range" class="mp-slider" min="0" max="10" step="1" value="10" oninput="onMpSlider('wpl',this)">
+            <div class="mp-result" id="mpr-wpl"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AOA Lab -->
+      <div class="card" data-subject="aoa-lab">
+        <div class="card-title">AOA Lab</div>
+        <div class="card-credits">Analysis of Algorithms Laboratory &nbsp;·&nbsp; <strong style="color:#c084fc">1
+            Credit</strong></div>
+        <div class="inputs-row">
+          <div class="input-group">
+            <label>TW</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="tw" min="0" max="25" placeholder="0">
+              <span class="max-val">/ 25</span>
+              <span class="lock-icon">🔒</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Practical / Viva</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="pv" min="0" max="25" placeholder="0">
+              <span class="max-val">/ 25</span>
+              <span class="lock-icon">🔒</span>
+            </div>
+          </div>
+        </div>
+        <div class="gp-row">
+          <span class="gp-label">Grade Pointer (G): <span class="grade-badge gp-grade">O</span></span>
+          <span class="gp-value gp-display">10</span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:100%"></div>
+          <div class="slider-thumb" style="left:100%"></div>
+        </div>
+        <button class="minimize-btn" onclick="toggleMinimizePanel('aoa-lab', this)">MINIMIZE MARKS ▾</button>
+        <div class="minimize-panel" id="mp-aoa-lab">
+          <div class="minimize-panel-inner">
+            <div class="mp-label-row"><span class="mp-label">Target Grade Pointer</span><span class="mp-gp-val"
+                id="mpv-aoa-lab">10</span></div>
+            <input type="range" class="mp-slider" min="0" max="10" step="1" value="10"
+              oninput="onMpSlider('aoa-lab',this)">
+            <div class="mp-result" id="mpr-aoa-lab"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RDBMS Lab -->
+      <div class="card" data-subject="rdbms-lab">
+        <div class="card-title">RDBMS Lab</div>
+        <div class="card-credits">Relational Database Management Systems Laboratory &nbsp;·&nbsp; <strong
+            style="color:#c084fc">1 Credit</strong></div>
+        <div class="inputs-row">
+          <div class="input-group">
+            <label>TW</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="tw" min="0" max="25" placeholder="0">
+              <span class="max-val">/ 25</span>
+              <span class="lock-icon">🔒</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Practical / Viva</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="pv" min="0" max="25" placeholder="0">
+              <span class="max-val">/ 25</span>
+              <span class="lock-icon">🔒</span>
+            </div>
+          </div>
+        </div>
+        <div class="gp-row">
+          <span class="gp-label">Grade Pointer (G): <span class="grade-badge gp-grade">O</span></span>
+          <span class="gp-value gp-display">10</span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:100%"></div>
+          <div class="slider-thumb" style="left:100%"></div>
+        </div>
+        <button class="minimize-btn" onclick="toggleMinimizePanel('rdbms-lab', this)">MINIMIZE MARKS ▾</button>
+        <div class="minimize-panel" id="mp-rdbms-lab">
+          <div class="minimize-panel-inner">
+            <div class="mp-label-row"><span class="mp-label">Target Grade Pointer</span><span class="mp-gp-val"
+                id="mpv-rdbms-lab">10</span></div>
+            <input type="range" class="mp-slider" min="0" max="10" step="1" value="10"
+              oninput="onMpSlider('rdbms-lab',this)">
+            <div class="mp-result" id="mpr-rdbms-lab"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OS Lab -->
+      <div class="card" data-subject="os-lab">
+        <div class="card-title">OS Lab</div>
+        <div class="card-credits">Operating Systems Laboratory &nbsp;·&nbsp; <strong style="color:#c084fc">1
+            Credit</strong></div>
+        <div class="inputs-row">
+          <div class="input-group">
+            <label>TW</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="tw" min="0" max="25" placeholder="0">
+              <span class="max-val">/ 25</span>
+              <span class="lock-icon">🔒</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Practical / Viva</label>
+            <div class="input-wrap">
+              <input type="number" class="mark-input" data-field="pv" min="0" max="25" placeholder="0">
+              <span class="max-val">/ 25</span>
+              <span class="lock-icon">🔒</span>
+            </div>
+          </div>
+        </div>
+        <div class="gp-row">
+          <span class="gp-label">Grade Pointer (G): <span class="grade-badge gp-grade">O</span></span>
+          <span class="gp-value gp-display">10</span>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:100%"></div>
+          <div class="slider-thumb" style="left:100%"></div>
+        </div>
+        <button class="minimize-btn" onclick="toggleMinimizePanel('os-lab', this)">MINIMIZE MARKS ▾</button>
+        <div class="minimize-panel" id="mp-os-lab">
+          <div class="minimize-panel-inner">
+            <div class="mp-label-row"><span class="mp-label">Target Grade Pointer</span><span class="mp-gp-val"
+                id="mpv-os-lab">10</span></div>
+            <input type="range" class="mp-slider" min="0" max="10" step="1" value="10"
+              oninput="onMpSlider('os-lab',this)">
+            <div class="mp-result" id="mpr-os-lab"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer>
+    Pointer Aid 2.0 &nbsp;·&nbsp; <span>FTC SwDC KJSSE</span> &nbsp;·&nbsp; KJSSE Grading Scale &nbsp;·&nbsp; Sem IV
+  </footer>
+
+  <!-- Sticky Bottom Bar -->
+  <div class="sticky-bottom">
+    <div class="summary-inner">
+      <div class="summary-item">
+        <div class="s-label">Total Credits</div>
+        <div class="s-value" id="total-credits">24</div>
+        <div class="s-sub">out of 24</div>
+      </div>
+      <div class="summary-item">
+        <div class="s-label">Total C × G</div>
+        <div class="s-value" id="total-cg">—</div>
+        <div class="s-sub">credit × pointer</div>
+      </div>
+      <div class="summary-item">
+        <div class="s-label">Final SGPI</div>
+        <div class="s-value" id="sgpi-display">—</div>
+        <div class="s-sub" id="sgpi-grade-text">enter marks to calculate</div>
+      </div>
+      <div class="minimize-global-wrap">
+        <button class="minimize-btn" style="white-space:nowrap;padding:10px 16px;font-size:0.62rem;border-radius:8px"
+          onclick="openGlobalMinimize()">
+          🎯 &nbsp; TARGET SGPI
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h2 id="modal-title">Minimize Marks</h2>
+      <p id="modal-desc">Enter your target Grade Pointer for this subject.</p>
+      <div class="target-input-wrap">
+        <input type="number" id="modal-target" min="0" max="10" step="1" placeholder="Target GP (0–10)">
+        <button class="calc-btn" onclick="calcMinimize()">Calculate</button>
+      </div>
+      <div class="modal-result" id="modal-result"></div>
+    </div>
+  </div>
+
+  <script>
+    // ─── Subject config ─────────────────────────────────────────────────────────
+    const SUBJECTS = {
+      'psot-theory': { credits: 3, type: 'theory', fields: { ise: 30, ia: 20, ese: 50 }, total: 100 },
+      'psot-tutorial': { credits: 1, type: 'tw-only', fields: { tw: 25 }, total: 25 },
+      'aoa': { credits: 3, type: 'theory', fields: { ise: 30, ia: 20, ese: 50 }, total: 100 },
+      'rdbms': { credits: 3, type: 'theory', fields: { ise: 30, ia: 20, ese: 50 }, total: 100 },
+      'os': { credits: 3, type: 'theory', fields: { ise: 30, ia: 20, ese: 50 }, total: 100 },
+      'oeg': { credits: 3, type: 'direct-gp', fields: { gp: 10 }, total: 10 },
+      'cpl-lab': { credits: 2, type: 'lab', fields: { tw: 50, pv: 50 }, total: 100 },
+      'wpl': { credits: 3, type: 'lab', fields: { tw: 50, pv: 50 }, total: 100 },
+      'aoa-lab': { credits: 1, type: 'lab', fields: { tw: 25, pv: 25 }, total: 50 },
+      'rdbms-lab': { credits: 1, type: 'lab', fields: { tw: 25, pv: 25 }, total: 50 },
+      'os-lab': { credits: 1, type: 'lab', fields: { tw: 25, pv: 25 }, total: 50 },
+    };
+
+    // ─── Grade conversion (KJSSE) ────────────────────────────────────────────────
+    function getGradePointer(percent) {
+      if (percent >= 80) return { gp: 10, grade: 'O' };
+      if (percent >= 70) return { gp: 9, grade: 'A' };
+      if (percent >= 60) return { gp: 8, grade: 'B' };
+      if (percent >= 50) return { gp: 7, grade: 'C' };
+      if (percent >= 40) return { gp: 6, grade: 'D' };
+      return { gp: 0, grade: 'F' };
+    }
+
+    // Min % needed to reach a given GP
+    const GP_MIN_PCT = { 10: 80, 9: 70, 8: 60, 7: 50, 6: 40, 0: 0 };
+
+    // ─── Lock state ──────────────────────────────────────────────────────────────
+    // Each lock stores: { subjectKey, fieldName } → true/false
+    const lockState = {};
+
+    function lockKey(subjectKey, field) {
+      return `${subjectKey}::${field}`;
+    }
+
+    function isLocked(subjectKey, field) {
+      return !!lockState[lockKey(subjectKey, field)];
+    }
+
+    function toggleLock(subjectKey, field, wrapEl, iconEl) {
+      const key = lockKey(subjectKey, field);
+      lockState[key] = !lockState[key];
+      const locked = lockState[key];
+      iconEl.textContent = locked ? '🔒' : '🔓';
+      wrapEl.classList.toggle('is-locked', locked);
+      if (locked) {
+        // disable input editing while locked
+        wrapEl.querySelector('input').setAttribute('readonly', true);
+      } else {
+        wrapEl.querySelector('input').removeAttribute('readonly');
+      }
+    }
+
+    // ─── Update card ─────────────────────────────────────────────────────────────
+    function updateCard(subjectKey) {
+      const card = document.querySelector(`[data-subject="${subjectKey}"]`);
+      if (!card) return;
+      const cfg = SUBJECTS[subjectKey];
+      const inputs = card.querySelectorAll('.mark-input');
+
+      let gp = 0, grade = 'F';
+      if (cfg.type === 'direct-gp') {
+        const val = Math.min(10, Math.max(0, parseFloat(inputs[0].value) || 0));
+        gp = val;
+        const grades = ['F', 'F', 'F', 'F', 'F', 'F', 'D', 'C', 'B', 'A', 'O'];
+        grade = grades[Math.round(gp)] || 'F';
+      } else {
+        let scored = 0, possible = 0;
+        inputs.forEach(inp => {
+          const max = parseFloat(inp.closest('.input-group').querySelector('.max-val').textContent.replace('/', '').trim());
+          const val = Math.min(max, Math.max(0, parseFloat(inp.value) || 0));
+          scored += val;
+          possible += max;
+        });
+        const percent = possible > 0 ? (scored / possible) * 100 : 0;
+        const res = getGradePointer(percent);
+        gp = res.gp; grade = res.grade;
+      }
+
+      card.querySelector('.gp-display').textContent = gp;
+      card.querySelector('.gp-grade').textContent = grade;
+
+      const pct = (gp / 10) * 100;
+      card.querySelector('.slider-fill').style.width = pct + '%';
+      card.querySelector('.slider-thumb').style.left = pct + '%';
+
+      updateSGPI();
+    }
+
+    // ─── SGPI ────────────────────────────────────────────────────────────────────
+    function updateSGPI() {
+      let totalCG = 0, totalC = 0;
+      let anyFilled = false;
+
+      Object.entries(SUBJECTS).forEach(([key, cfg]) => {
+        const card = document.querySelector(`[data-subject="${key}"]`);
+        if (!card) return;
+        const gp = parseFloat(card.querySelector('.gp-display').textContent) || 0;
+        card.querySelectorAll('.mark-input').forEach(i => { if (i.value !== '') anyFilled = true; });
+        totalCG += cfg.credits * gp;
+        totalC += cfg.credits;
+      });
+
+      document.getElementById('total-credits').textContent = totalC;
+      if (!anyFilled) {
+        document.getElementById('total-cg').textContent = '—';
+        document.getElementById('sgpi-display').textContent = '—';
+        document.getElementById('sgpi-grade-text').textContent = 'enter marks to calculate';
+        return;
+      }
+
+      const sgpi = totalC > 0 ? (totalCG / totalC) : 0;
+      document.getElementById('total-cg').textContent = totalCG.toFixed(1);
+      document.getElementById('sgpi-display').textContent = sgpi.toFixed(2);
+
+      const gradeLabels = { 10: 'O', 9: 'A', 8: 'B', 7: 'C', 6: 'D', 0: 'F' };
+      const gradeText = gradeLabels[getGradePointer(sgpi * 10).gp] || '—';
+      document.getElementById('sgpi-grade-text').textContent = `Overall Grade: ${gradeText}`;
+    }
+
+    // ─── Attach input listeners ──────────────────────────────────────────────────
+    document.querySelectorAll('.mark-input').forEach(input => {
+      input.addEventListener('input', () => {
+        const card = input.closest('.card');
+        const key = card.getAttribute('data-subject');
+        const max = parseFloat(input.max);
+        if (!isNaN(max) && parseFloat(input.value) > max) input.value = max;
+        if (parseFloat(input.value) < 0) input.value = 0;
+        updateCard(key);
+      });
+    });
+
+    // ─── Attach lock listeners ───────────────────────────────────────────────────
+    document.querySelectorAll('.lock-icon').forEach(icon => {
+      const wrap = icon.closest('.input-wrap');
+      const inputGroup = icon.closest('.input-group');
+      const card = icon.closest('.card');
+      const subjectKey = card.getAttribute('data-subject');
+      // figure out field name from data-field of input inside
+      const inp = wrap.querySelector('input');
+      const field = inp.getAttribute('data-field');
+      // init icon state
+      icon.textContent = '🔓';
+      icon.addEventListener('click', () => toggleLock(subjectKey, field, wrap, icon));
+    });
+
+    // ─── Inline Minimize Panel ────────────────────────────────────────────────────
+    function toggleMinimizePanel(subjectKey, btn) {
+      const panel = document.getElementById('mp-' + subjectKey);
+      const isOpen = panel.classList.contains('open');
+      if (isOpen) {
+        panel.classList.remove('open');
+        btn.textContent = 'MINIMIZE MARKS ▾';
+      } else {
+        panel.classList.add('open');
+        btn.textContent = 'MINIMIZE MARKS ▴';
+        // Render with current slider value
+        const slider = panel.querySelector('.mp-slider');
+        renderMpResult(subjectKey, parseInt(slider.value));
+      }
+    }
+
+    function onMpSlider(subjectKey, slider) {
+      const gp = parseInt(slider.value);
+      document.getElementById('mpv-' + subjectKey).textContent = gp;
+      renderMpResult(subjectKey, gp);
+    }
+
+    function renderMpResult(subjectKey, targetGP) {
+      const cfg = SUBJECTS[subjectKey];
+      const resultDiv = document.getElementById('mpr-' + subjectKey);
+      let html = '';
+
+      if (cfg.type === 'direct-gp') {
+        html = `<div class="res-line"><span>Set Grade Pointer to</span><span>${targetGP}</span></div>`;
+        resultDiv.innerHTML = html;
+        return;
+      }
+
+      const minPct = GP_MIN_PCT[targetGP];
+      if (minPct !== undefined) {
+        html += `<div class="res-line" style="margin-bottom:4px"><span style="color:var(--muted)">Min % needed</span><span style="color:var(--muted)">≥ ${minPct}%</span></div>`;
+      }
+
+      const { result, error, note } = solveMinimize(subjectKey, targetGP);
+      if (error) {
+        html += `<div style="color:#f87171;font-size:0.73rem;margin-top:4px">${error}</div>`;
+      } else {
+        if (note) html += `<div style="color:#34d399;font-size:0.72rem;margin-bottom:4px">${note}</div>`;
+        Object.entries(result).forEach(([field, minVal]) => {
+          const maxV = cfg.fields[field] ?? 10;
+          const locked = isLocked(subjectKey, field);
+          const lockTag = locked ? ' <span style="color:#a855f7;font-size:0.65rem">[locked]</span>' : '';
+          html += `<div class="res-line"><span>${field.toUpperCase()}${lockTag} <span style="color:var(--muted);font-size:0.68rem">(min)</span></span><span>${minVal} / ${maxV}</span></div>`;
+        });
+      }
+
+      resultDiv.innerHTML = html;
+    }
+
+    let activeMinimizeKey = null;
+
+    function openGlobalMinimize() {
+      activeMinimizeKey = '__global__';
+      document.getElementById('modal-title').textContent = 'Minimize Marks for Target SGPI';
+      document.getElementById('modal-desc').innerHTML = 'Enter your target SGPI (0–10). Locked fields are respected per subject.';
+      document.getElementById('modal-target').value = '';
+      document.getElementById('modal-result').classList.remove('show');
+      document.getElementById('modal-result').innerHTML = '';
+      document.getElementById('modal-overlay').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('open');
+    }
+
+    document.getElementById('modal-overlay').addEventListener('click', e => {
+      if (e.target === document.getElementById('modal-overlay')) closeModal();
+    });
+
+    // ─── Core minimize logic ─────────────────────────────────────────────────────
+    // Given a target GP and locked/unlocked field info, return min marks for unlocked fields.
+    // Returns: { fieldName: minValue } for unlocked, or an error string.
+    function solveMinimize(subjectKey, targetGP) {
+      const cfg = SUBJECTS[subjectKey];
+
+      if (cfg.type === 'direct-gp') {
+        return { result: { 'Grade Pointer': targetGP }, error: null };
+      }
+
+      const minPct = GP_MIN_PCT[targetGP] ?? 0;
+      const total = cfg.total;
+      const required = (minPct / 100) * total; // total marks needed across all fields
+
+      // Gather locked/unlocked
+      const card = document.querySelector(`[data-subject="${subjectKey}"]`);
+      const lockedFields = {};
+      const unlockedFields = {};
+
+      Object.keys(cfg.fields).forEach(field => {
+        const max = cfg.fields[field];
+        const inp = card.querySelector(`input[data-field="${field}"]`);
+        const val = parseFloat(inp ? inp.value : 0) || 0;
+        if (isLocked(subjectKey, field)) {
+          lockedFields[field] = { val: Math.min(val, max), max };
+        } else {
+          unlockedFields[field] = { val, max };
+        }
+      });
+
+      const lockedSum = Object.values(lockedFields).reduce((s, f) => s + f.val, 0);
+      const remainingNeeded = required - lockedSum;
+      const unlockedMaxTotal = Object.values(unlockedFields).reduce((s, f) => s + f.max, 0);
+
+      // Check feasibility
+      if (remainingNeeded > unlockedMaxTotal) {
+        const maxPossiblePct = ((lockedSum + unlockedMaxTotal) / total) * 100;
+        const maxGP = getGradePointer(maxPossiblePct).gp;
+        return {
+          result: null,
+          error: `Cannot reach GP ${targetGP} with locked fields. Max achievable GP is ${maxGP} even with full marks in unlocked fields.`
+        };
+      }
+
+      if (remainingNeeded <= 0) {
+        // Locked fields alone already meet the target — unlocked can be 0
+        const result = {};
+        Object.keys(unlockedFields).forEach(f => result[f] = 0);
+        return { result, error: null, note: 'Locked fields already satisfy the target GP. Unlocked fields can be 0.' };
+      }
+
+      // Distribute remaining needed proportionally across unlocked fields
+      const result = {};
+      const unlockedEntries = Object.entries(unlockedFields);
+      let distributed = 0;
+
+      unlockedEntries.forEach(([field, info], i) => {
+        if (i === unlockedEntries.length - 1) {
+          // last one gets the remainder, clamped to max
+          result[field] = Math.min(info.max, Math.max(0, Math.ceil(remainingNeeded - distributed)));
+        } else {
+          const share = Math.ceil((info.max / unlockedMaxTotal) * remainingNeeded);
+          result[field] = Math.min(info.max, share);
+          distributed += result[field];
+        }
+      });
+
+      return { result, error: null };
+    }
+
+    function calcMinimize() {
+      const targetVal = parseFloat(document.getElementById('modal-target').value);
+      const resultDiv = document.getElementById('modal-result');
+
+      if (isNaN(targetVal)) {
+        resultDiv.innerHTML = '<span style="color:#f87171">Please enter a valid target.</span>';
+        resultDiv.classList.add('show');
+        return;
+      }
+
+      let html = '';
+
+      if (activeMinimizeKey === '__global__') {
+        if (targetVal < 0 || targetVal > 10) {
+          resultDiv.innerHTML = '<span style="color:#f87171">SGPI must be between 0 and 10.</span>';
+          resultDiv.classList.add('show');
+          return;
+        }
+        // For global, find target GP per subject. We use ceiling GP that satisfies SGPI.
+        // Simple approach: each subject must get at least GP = ceil(targetSGPI) to be safe,
+        // but we distribute smarter: find minimum integer GP per subject st weighted avg >= target
+        const targetSGPI = targetVal;
+        html += `<div class="res-line"><span>Target SGPI</span><span>${targetSGPI}</span></div>`;
+        html += `<div style="height:8px"></div>`;
+
+        Object.entries(SUBJECTS).forEach(([key, cfg]) => {
+          const card = document.querySelector(`[data-subject="${key}"]`);
+          const name = card.querySelector('.card-title').textContent;
+          // Find minimum GP for this subject to contribute to SGPI target
+          // Conservatively: each subject should hit at least floor(targetSGPI)
+          const minGP = Math.min(10, Math.ceil(targetSGPI));
+          html += `<div class="res-line" style="color:#c084fc;margin-top:8px"><span>${name}</span><span style="font-size:0.8rem">Target GP ≥ ${minGP}</span></div>`;
+          const { result, error, note } = solveMinimize(key, minGP);
+          if (error) {
+            html += `<div class="res-line" style="padding-left:12px;color:#f87171;font-size:0.75rem"><span>${error}</span></div>`;
+          } else {
+            if (note) html += `<div class="res-line" style="padding-left:12px;color:#34d399;font-size:0.72rem"><span>${note}</span></div>`;
+            Object.entries(result).forEach(([f, v]) => {
+              const max = cfg.fields[f] ?? 10;
+              const locked = isLocked(key, f);
+              const lockTag = locked ? ' <span style="color:#a855f7;font-size:0.68rem">[locked]</span>' : '';
+              html += `<div class="res-line" style="padding-left:12px;font-size:0.75rem"><span>${f.toUpperCase()}${lockTag}</span><span>${v} / ${max}</span></div>`;
+            });
+          }
+        });
+
+      } else {
+        // Single subject
+        if (!Number.isInteger(targetVal) || targetVal < 0 || targetVal > 10) {
+          resultDiv.innerHTML = '<span style="color:#f87171">Grade Pointer must be a whole number between 0 and 10.</span>';
+          resultDiv.classList.add('show');
+          return;
+        }
+        const cfg = SUBJECTS[activeMinimizeKey];
+        const minPct = GP_MIN_PCT[targetVal];
+        const card = document.querySelector(`[data-subject="${activeMinimizeKey}"]`);
+
+        html += `<div class="res-line"><span>Target Grade Pointer</span><span style="color:#c084fc;font-weight:700">${targetVal}</span></div>`;
+        if (minPct !== undefined) {
+          html += `<div class="res-line" style="color:var(--muted);font-size:0.72rem"><span>Min % needed</span><span>≥ ${minPct}%</span></div>`;
+        }
+
+        // Show locked field values
+        const lockedFields = Object.keys(cfg.fields).filter(f => isLocked(activeMinimizeKey, f));
+        if (lockedFields.length > 0) {
+          html += `<div style="height:6px"></div>`;
+          lockedFields.forEach(f => {
+            const inp = card.querySelector(`input[data-field="${f}"]`);
+            const val = parseFloat(inp ? inp.value : 0) || 0;
+            const max = cfg.fields[f];
+            html += `<div class="res-line" style="font-size:0.75rem"><span style="color:#a855f7">${f.toUpperCase()} <span style="font-size:0.65rem">[locked]</span></span><span style="color:#a855f7">${val} / ${max}</span></div>`;
+          });
+        }
+
+        html += `<div style="height:6px"></div>`;
+
+        const { result, error, note } = solveMinimize(activeMinimizeKey, targetVal);
+        if (error) {
+          html += `<div style="color:#f87171;font-size:0.8rem;margin-top:6px">${error}</div>`;
+        } else {
+          if (note) html += `<div style="color:#34d399;font-size:0.72rem;margin-bottom:6px">${note}</div>`;
+          Object.entries(result).forEach(([field, minVal]) => {
+            const maxV = cfg.fields[field] ?? 10;
+            html += `<div class="res-line"><span>${field.toUpperCase()} <span style="color:var(--muted);font-size:0.7rem">(min needed)</span></span><span style="color:#c084fc;font-weight:600">${minVal} / ${maxV}</span></div>`;
+          });
+        }
+      }
+
+      resultDiv.innerHTML = html;
+      resultDiv.classList.add('show');
+    }
+
+    // ─── Init ────────────────────────────────────────────────────────────────────
+    Object.keys(SUBJECTS).forEach(key => updateCard(key));
+  </script>
+</body>
+
+</html>
