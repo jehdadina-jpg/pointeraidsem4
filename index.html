@@ -1254,18 +1254,17 @@
 
     // ─── Grade conversion (KJSSE) ────────────────────────────────────────────────
 function getGradePointer(percent) {
-  if (percent > 80) return { gp: 10, grade: 'O' };
-  if (percent > 70) return { gp: 9,  grade: 'A+' };
-  if (percent > 60) return { gp: 8,  grade: 'A' };
-  if (percent > 55) return { gp: 7,  grade: 'B+' };
-  if (percent > 50) return { gp: 6,  grade: 'B' };
-  if (percent > 45) return { gp: 5,  grade: 'C' };
-  if (percent > 40) return { gp: 4,  grade: 'D' };
+  if (percent >= 80) return { gp: 10, grade: 'O' };
+  if (percent >= 70) return { gp: 9,  grade: 'A+' };
+  if (percent >= 60) return { gp: 8,  grade: 'A' };
+  if (percent >= 55) return { gp: 7,  grade: 'B+' };
+  if (percent >= 50) return { gp: 6,  grade: 'B' };
+  if (percent >= 45) return { gp: 5,  grade: 'C' };
+  if (percent >= 40) return { gp: 4,  grade: 'D' };
   return { gp: 0, grade: 'F' };
 }
 
-    // Min % needed to reach a given GP
-    const GP_MIN_PCT = { 10: 81, 9: 71, 8: 61, 7: 56, 6: 51, 5: 46, 4: 41, 0: 0 };
+const GP_MIN_PCT = { 10: 80, 9: 70, 8: 60, 7: 55, 6: 50, 5: 45, 4: 40, 0: 0 };
 
     // ─── Lock state ──────────────────────────────────────────────────────────────
     // Each lock stores: { subjectKey, fieldName } → true/false
