@@ -1251,7 +1251,16 @@
       'rdbms-lab': { credits: 1, type: 'lab', fields: { tw: 25, pv: 25 }, total: 50 },
       'os-lab': { credits: 1, type: 'lab', fields: { tw: 25, pv: 25 }, total: 50 },
     };
-
+function applyMinMarks(subjectKey, result) {
+  const card = document.querySelector(`[data-subject="${subjectKey}"]`);
+  Object.entries(result).forEach(([field, val]) => {
+    const inp = card.querySelector(`input[data-field="${field}"]`);
+    if (inp && !isLocked(subjectKey, field)) {
+      inp.value = val;
+    }
+  });
+  updateCard(subjectKey);
+}
     // ─── Grade conversion (KJSSE) ────────────────────────────────────────────────
 function getGradePointer(percent) {
   if (percent >= 80) return { gp: 10, grade: 'O' };
@@ -1434,13 +1443,14 @@ const GP_MIN_PCT = { 10: 80, 9: 70, 8: 60, 7: 55, 6: 50, 5: 45, 4: 40, 0: 0 };
       } else {
         if (note) html += `<div style="color:#34d399;font-size:0.72rem;margin-bottom:4px">${note}</div>`;
         Object.entries(result).forEach(([field, minVal]) => {
-          const maxV = cfg.fields[field] ?? 10;
-          const locked = isLocked(subjectKey, field);
-          const lockTag = locked ? ' <span style="color:#a855f7;font-size:0.65rem">[locked]</span>' : '';
-          html += `<div class="res-line"><span>${field.toUpperCase()}${lockTag} <span style="color:var(--muted);font-size:0.68rem">(min)</span></span><span>${minVal} / ${maxV}</span></div>`;
-        });
+const maxV = cfg.fields[field] ?? 10;
+  const locked = isLocked(subjectKey, field);
+  const lockTag = locked ? ' <span style="color:#a855f7;font-size:0.65rem">[locked]</span>' : '';
+  html += `<div class="res-line"><span>${field.toUpperCase()}${lockTag} <span style="color:var(--muted);font-size:0.68rem">(min)</span></span><span>${minVal} / ${maxV}</span></div>`;
+});
+const encoded = encodeURIComponent(JSON.stringify(result));
+html += `<button onclick="applyMinMarks('${subjectKey}', JSON.parse(decodeURIComponent('${encoded}')))" style="margin-top:10px;width:100%;background:var(--accent2);border:none;border-radius:6px;color:#fff;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:1.5px;text-transform:uppercase;padding:7px;cursor:pointer;">↑ Apply Min Marks</button>`;
       }
-
       resultDiv.innerHTML = html;
     }
 
