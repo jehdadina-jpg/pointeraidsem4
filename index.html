@@ -1279,18 +1279,23 @@ const GP_MIN_PCT = { 10: 80, 9: 70, 8: 60, 7: 55, 6: 50, 5: 45, 4: 40, 0: 0 };
     }
 
     function toggleLock(subjectKey, field, wrapEl, iconEl) {
-      const key = lockKey(subjectKey, field);
-      lockState[key] = !lockState[key];
-      const locked = lockState[key];
-      iconEl.textContent = locked ? '🔒' : '🔓';
-      wrapEl.classList.toggle('is-locked', locked);
-      if (locked) {
-        // disable input editing while locked
-        wrapEl.querySelector('input').setAttribute('readonly', true);
-      } else {
-        wrapEl.querySelector('input').removeAttribute('readonly');
-      }
-    }
+  const key = lockKey(subjectKey, field);
+  lockState[key] = !lockState[key];
+  const locked = lockState[key];
+  iconEl.textContent = locked ? '🔒' : '🔓';
+  wrapEl.classList.toggle('is-locked', locked);
+  if (locked) {
+    wrapEl.querySelector('input').setAttribute('readonly', true);
+  } else {
+    wrapEl.querySelector('input').removeAttribute('readonly');
+  }
+  // Auto-refresh minimize panel if open
+  const panel = document.getElementById('mp-' + subjectKey);
+  if (panel && panel.classList.contains('open')) {
+    const slider = panel.querySelector('.mp-slider');
+    renderMpResult(subjectKey, parseInt(slider.value));
+  }
+}
 
     // ─── Update card ─────────────────────────────────────────────────────────────
     function updateCard(subjectKey) {
