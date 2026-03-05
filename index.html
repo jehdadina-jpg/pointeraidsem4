@@ -1518,9 +1518,9 @@ const GP_MIN_PCT = { 10: 80, 9: 70, 8: 60, 7: 55, 6: 50, 5: 45, 4: 40, 0: 0 };
       unlockedEntries.forEach(([field, info], i) => {
         if (i === unlockedEntries.length - 1) {
           // last one gets the remainder, clamped to max
-          result[field] = Math.min(info.max, Math.max(0, Math.ceil(remainingNeeded - distributed)));
+          result[field] = Math.min(info.max, Math.max(0, Math.round(remainingNeeded - distributed)));
         } else {
-          const share = Math.ceil((info.max / unlockedMaxTotal) * remainingNeeded);
+          const share = Math.round((info.max / unlockedMaxTotal) * remainingNeeded);
           result[field] = Math.min(info.max, share);
           distributed += result[field];
         }
